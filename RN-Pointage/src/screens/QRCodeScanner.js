@@ -33,7 +33,7 @@ const QRCodeScanner = ({params}) => {
       setUser(currentUser.data);
       console.log(currentUser.data);
     } catch (error) {
-      console.log(error);
+      console.log('current', error);
     }
   };
   useEffect(() => {
@@ -48,7 +48,7 @@ const QRCodeScanner = ({params}) => {
 
   const getAllSites = async () => {
     try {
-      let result = await (await axios.get('`${url}/sites/')).data;
+      let result = await (await axios.get(`${url}/sites/`)).data;
       setSites(result);
     } catch (error) {
       console.log(error);
@@ -78,7 +78,7 @@ const QRCodeScanner = ({params}) => {
   };
 
   const sendPointage = async data => {
-    console.log(data);
+    console.log('data', data);
     getAllEntreprise();
     getAllSites();
     let siteIdFromQRCode = data.split('/')[0];
@@ -129,7 +129,7 @@ const QRCodeScanner = ({params}) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     try {
-      await axios.post('`${url}/pointages', pointage);
+      await axios.post(`${url}/pointages`, pointage);
       console.log('success');
     } catch (error) {
       console.log('failed: ', error);

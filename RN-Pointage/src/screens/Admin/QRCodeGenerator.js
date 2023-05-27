@@ -80,11 +80,11 @@ const QRCodeGenerator = () => {
               value={radioValue}>
               <View style={styles.radioItem}>
                 <RadioButton value="Entree" />
-                <Text style={styles.radioLabel}>Enteree</Text>
+                <Text style={styles.radioLabel}>Entrée</Text>
               </View>
               <View style={styles.radioItem}>
                 <RadioButton value="Sortie" />
-                <Text style={styles.radioLabel}>Soritie</Text>
+                <Text style={styles.radioLabel}>Sortie</Text>
               </View>
             </RadioButton.Group>
           </View>

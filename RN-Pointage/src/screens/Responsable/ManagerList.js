@@ -72,7 +72,7 @@ const ManagerList = () => {
     try {
       await axios.delete(`${url}/users/${id}`);
       Sites.map(e =>
-        updateSite({...e, users: e.users.filter(e => !e.id === i)}),
+        updateSite({...e, users: e.users.filter(e => !e.id === id)}),
       );
     } catch (error) {
       console.log(error);

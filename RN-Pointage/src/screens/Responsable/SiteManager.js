@@ -39,7 +39,7 @@ const SiteManager = () => {
       let result = await axios.get(`${url}/sites/${CurrentUser.site}`);
       setSelectedSite(result.data);
     } catch (error) {
-      console.log(error);
+      console.log('current site', error, CurrentUser.site);
     }
   };
 
@@ -53,7 +53,7 @@ const SiteManager = () => {
       setCurrentUser(currentUser.data);
       setSiteID(currentUser.data.site.siteId);
     } catch (error) {
-      console.log(error);
+      console.log('current', error);
     }
   };
 
@@ -70,7 +70,7 @@ const SiteManager = () => {
       let result = await (await axios.get(`${url}/users/`)).data;
       setEmployers(result);
     } catch (error) {
-      console.log(error);
+      console.log('users', error);
     }
   };
   const getAllSites = async () => {

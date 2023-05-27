@@ -71,7 +71,10 @@ const Login = () => {
     } else if (role === 'ROLE_MODERATOR') {
       navigation.navigate('Manager');
     } else {
-      Alert.alert('Error', 'Invalid email or password. Please try again.');
+      Alert.alert(
+        "Message d'erreur",
+        'Identifiant ou mot de passe invalide ! Veuillez réessayer.',
+      );
       console.log(role);
     }
   };
@@ -187,7 +190,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   eyeIconContainer: {
-    right: -120,
+    right: -105,
     top: -5,
   },
   eyeIcon: {
