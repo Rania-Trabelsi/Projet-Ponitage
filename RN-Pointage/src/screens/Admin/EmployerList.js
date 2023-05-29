@@ -69,9 +69,8 @@ const EmployerList = () => {
   const deleteUser = async id => {
     try {
       await axios.delete(`${url}/users/${id}`);
-      Sites.map(e =>
-        updateSite({...e, users: e.users.filter(e => !e.id === i)}),
-      );
+      let currentSiteId = getUserSite(selectedEmployer).siteId;
+      deleteUserFromSite(id, currentSiteId);
     } catch (error) {
       console.log(error);
     }
@@ -139,12 +138,24 @@ const EmployerList = () => {
       console.log(error);
     }
   };
+
+  const deleteUserFromSite = async (userId, siteId) => {
+    try {
+      await axios.delete(`${url}/sites/${siteId}/users/${userId}`);
+      console.log('deleted');
+    } catch (error) {
+      console.log('password', error);
+    }
+  };
+
   const handleEditPress = employer => {
     setSelectedEmployer(employer);
     setFormName(employer.username);
     setFormEmail(employer.email);
     setFormrole(...employer.roles);
+    setFormSite(getUserSite(employer));
     setFormEntreprise(employer.entreprise);
+    setFormPassword('');
     setModalVisible(true);
   };
 
@@ -164,6 +175,32 @@ const EmployerList = () => {
     setModalVisible(true);
   };
 
+  const getUserSite = user => {
+    let result = Sites.filter(
+      (e, i) => e.users.find(el => el.id == user.id) && i != 0,
+    )[0];
+
+    return result ? result : {users: []};
+  };
+
+  const updatePassword = async (id, newPassword) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      };
+      await axios.put(
+        `${url}/users/${id}/change-password`,
+        newPassword,
+        config,
+      );
+      console.log('changed', newPassword);
+    } catch (error) {
+      console.log('password', error);
+    }
+  };
+
   const handleFormSubmit = () => {
     if (selectedEmployer) {
       let updatedEmployer = {
@@ -173,12 +210,19 @@ const EmployerList = () => {
         email: formEmail,
       };
       console.log(formrole);
-      console.log(updatedEmployer);
-      if (!formSite.users.find(e => e.id === selectedEmployer.id)) {
-        addSiteUser(formSite.siteId, selectedEmployer);
+      console.log('update', updatedEmployer);
+      console.log(formSite);
+      UpdateUser(updatedEmployer);
+      if (formPassword !== '') {
+        updatePassword(selectedEmployer.id, formPassword);
       }
 
-      UpdateUser(updatedEmployer);
+      console.log('site', getUserSite(selectedEmployer));
+      let currentSiteId = getUserSite(selectedEmployer).siteId;
+      if (formSite.users.findIndex(e => e.id == selectedEmployer.id) == -1) {
+        addSiteUser(formSite.siteId, selectedEmployer);
+        deleteUserFromSite(selectedEmployer.id, currentSiteId);
+      }
     } else {
       const newEmployer = {
         username: formName,
@@ -205,14 +249,15 @@ const EmployerList = () => {
       return selectedSite.users;
     }
   };
-  const deleteBtn = id => {
+  const deleteBtn = user => {
+    setSelectedEmployer(user);
     Alert.alert('Supprimer', 'Voulez-vous supprimer cet employé ?', [
       {
         text: 'Annuler',
-        onPress: () => console.log('Cancel Pressed'),
+        onPress: () => console.log(getUserSite(selectedEmployer).siteId),
         style: 'cancel',
       },
-      {text: 'Confirmer', onPress: () => deleteUser(id)},
+      {text: 'Confirmer', onPress: () => deleteUser(user.id)},
     ]);
   };
 
@@ -250,7 +295,7 @@ const EmployerList = () => {
             <TouchableOpacity
               style={styles.deleteButton}
               onPress={() => {
-                deleteBtn(employer.id);
+                deleteBtn(employer);
               }}>
               <Icon name="deleteuser" size={25} color="#fff" />
             </TouchableOpacity>
@@ -283,7 +328,9 @@ const EmployerList = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Mot de passe"
+            placeholder={
+              selectedEmployer ? 'Nouveau Mot de Pass' : 'Mot de passe'
+            }
             secureTextEntry
             value={formPassword}
             onChangeText={setFormPassword}

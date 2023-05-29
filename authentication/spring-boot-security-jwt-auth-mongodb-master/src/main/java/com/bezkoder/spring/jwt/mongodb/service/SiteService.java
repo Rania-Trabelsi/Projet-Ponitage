@@ -64,4 +64,27 @@ public class SiteService {
         repository.save(site);
         return user;
     }
+    public Site deleteUserFromSite(String siteId, User user) {
+        Site site = getSiteById(siteId);
+
+        if (site == null) {
+            // Handle the case where the site does not exist
+            return null;
+        }
+
+        Set<User> users = site.getUsers();
+
+        boolean removed = users.removeIf(u -> u.getId().equals(user.getId()));
+
+        if (removed) {
+            site.setUsers(users);
+            repository.save(site);
+            return site;
+        } else {
+            // Handle the case where the user is not associated with the site
+            return null;
+        }
+    }
+
+
 }

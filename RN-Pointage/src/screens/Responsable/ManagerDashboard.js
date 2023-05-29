@@ -184,7 +184,8 @@ const ManagerDashboard = () => {
           {filteredPointages
             .filter(
               e =>
-                e.site.siteId == CurrentUser.site &&
+                (e.site.siteId == CurrentUser.site ||
+                  e.user.id == CurrentUser.id) &&
                 e.user.roles[0].name !== 'ROLE_ADMIN',
             )
             .map(pointage => (

@@ -144,4 +144,5 @@ public class AuthController {
 
 		return ResponseEntity.ok(userRepository.findById(user.getId()));
 	}
+
 }

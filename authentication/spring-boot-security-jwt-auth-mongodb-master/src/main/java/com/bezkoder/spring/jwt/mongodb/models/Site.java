@@ -60,4 +60,7 @@ public class Site {
     public void addUser(User user) {
         this.users.add(user);
     }
+    public void deleteUser(User user) {
+        this.users.remove(user);
+    }
 }

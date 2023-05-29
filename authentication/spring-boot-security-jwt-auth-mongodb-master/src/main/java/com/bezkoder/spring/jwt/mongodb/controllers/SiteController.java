@@ -3,7 +3,9 @@ package com.bezkoder.spring.jwt.mongodb.controllers;
 import com.bezkoder.spring.jwt.mongodb.models.Site;
 import com.bezkoder.spring.jwt.mongodb.models.User;
 import com.bezkoder.spring.jwt.mongodb.repository.SiteRepository;
+import com.bezkoder.spring.jwt.mongodb.repository.UserRepository;
 import com.bezkoder.spring.jwt.mongodb.service.SiteService;
+import com.bezkoder.spring.jwt.mongodb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,9 @@ public class SiteController {
 
     @Autowired
     private SiteRepository repo;
+
+    @Autowired
+    private UserService userService;
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createSite(@RequestBody Site site) {
@@ -53,5 +58,19 @@ public class SiteController {
     @PostMapping("/{siteId}/users")
     public User addUserToSite(@PathVariable String siteId, @RequestBody User user) {
         return service.addUserToSite(siteId, user);
+    }
+    @DeleteMapping("/{siteId}/users/{userId}")
+    public ResponseEntity<String> deleteUserFromSite(
+            @PathVariable String siteId,
+            @PathVariable String userId
+    ) {
+        User user = userService.getTaskByUserId(userId);
+        Site site = service.deleteUserFromSite(siteId, user);
+
+        if (site == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok("User deleted from site successfully.");
     }
 }

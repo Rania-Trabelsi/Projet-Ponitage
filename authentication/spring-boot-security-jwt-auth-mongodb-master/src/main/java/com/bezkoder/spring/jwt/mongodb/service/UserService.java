@@ -4,6 +4,7 @@ import com.bezkoder.spring.jwt.mongodb.models.Role;
 import com.bezkoder.spring.jwt.mongodb.models.User;
 import com.bezkoder.spring.jwt.mongodb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,9 @@ import java.util.Set;
 public class UserService {
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     //CRUD  CREATE , READ , UPDATE , DELETE
 
@@ -32,7 +36,13 @@ public class UserService {
         // update basic user fields
         existingUser.setUsername(userRequest.getUsername());
         existingUser.setEmail(userRequest.getEmail());
-        existingUser.setPassword(userRequest.getPassword());
+
+        // Update password if provided
+        if (userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()) {
+            // Hash the new password
+            String hashedPassword = passwordEncoder.encode(userRequest.getPassword());
+            existingUser.setPassword(hashedPassword);
+        }
         existingUser.setSite(userRequest.getSite());
         existingUser.setEntreprise(userRequest.getEntreprise());
 
@@ -55,5 +65,17 @@ public class UserService {
     public String deleteUser(String userId){
         repository.deleteById(userId);
         return userId+" task deleted from dashboard ";
+    }
+    public boolean resetPassword(String userId, String newPassword) {
+        User user = repository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        // Update password
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(hashedPassword);
+        repository.save(user);
+        return true;
     }
 }

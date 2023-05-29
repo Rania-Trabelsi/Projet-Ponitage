@@ -30,7 +30,7 @@ const Admin = () => {
     console.log(decoded);
 
     try {
-      let currentUser = await axios.get(`${url}/users/${decoded.id}`);
+      let currentUser = await axios.get(`${url}/users/${decoded.id}`); //yekhi l id yetekhdh mel token ?
       setUser(currentUser.data);
     } catch (error) {
       console.log(error);

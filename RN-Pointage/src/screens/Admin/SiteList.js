@@ -138,6 +138,8 @@ const SiteList = () => {
   const updateSite = async site => {
     try {
       await axios.put(`${url}/sites`, site);
+      UpdateUser({...formResponsable, site: site.siteId});
+      addSiteUser(site.siteId, formResponsable);
     } catch (error) {
       console.log(error);
     }
