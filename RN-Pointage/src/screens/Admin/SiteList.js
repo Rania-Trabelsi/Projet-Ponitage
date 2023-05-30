@@ -98,7 +98,10 @@ const SiteList = () => {
       const newSite = {siteId: response.data.siteId};
       console.log('site Id =', newSite.siteId);
       addSiteUser(newSite.siteId, formResponsable);
-      UpdateUser({...formResponsable, site: newSite.siteId});
+      UpdateUser(formResponsable.id, {
+        ...formResponsable,
+        site: newSite.siteId,
+      });
 
       addSitetoEntreprise(CurrentUser.entreprise.entrepriseId, newSite.siteId);
     } catch (error) {
@@ -138,7 +141,7 @@ const SiteList = () => {
   const updateSite = async site => {
     try {
       await axios.put(`${url}/sites`, site);
-      UpdateUser({...formResponsable, site: site.siteId});
+      UpdateUser(formResponsable.id, {...formResponsable, site: site.siteId});
       addSiteUser(site.siteId, formResponsable);
     } catch (error) {
       console.log(error);
@@ -151,9 +154,9 @@ const SiteList = () => {
       console.log(error);
     }
   };
-  const UpdateUser = async user => {
+  const UpdateUser = async (id, user) => {
     try {
-      await axios.put(`${url}/users`, user);
+      await axios.put(`${url}/users/${id}`, user);
     } catch (error) {
       console.log(error);
     }

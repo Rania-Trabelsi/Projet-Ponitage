@@ -68,12 +68,19 @@ const ManagerList = () => {
     }
   };
 
+  const deleteUserFromSite = async (userId, siteId) => {
+    try {
+      await axios.delete(`${url}/sites/${siteId}/users/${userId}`);
+      console.log('deleted');
+    } catch (error) {
+      console.log('password', error);
+    }
+  };
+
   const deleteUser = async id => {
     try {
+      await deleteUserFromSite(id, CurrentUser.site);
       await axios.delete(`${url}/users/${id}`);
-      Sites.map(e =>
-        updateSite({...e, users: e.users.filter(e => !e.id === id)}),
-      );
     } catch (error) {
       console.log(error);
     }

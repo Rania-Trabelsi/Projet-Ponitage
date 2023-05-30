@@ -27,8 +27,8 @@ public class UserService {
     public User getTaskByUserId(String userId){
         return repository.findById(userId).get();
     }
-    public User updateUser(User userRequest) {
-        User existingUser = repository.findById(userRequest.getId()).orElse(null);
+    public User updateUser(String userId,User userRequest) {
+        User existingUser = repository.findById(userId).orElse(null);
         if (existingUser == null) {
             throw new RuntimeException("User not found");
         }
@@ -37,12 +37,7 @@ public class UserService {
         existingUser.setUsername(userRequest.getUsername());
         existingUser.setEmail(userRequest.getEmail());
 
-        // Update password if provided
-        if (userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()) {
-            // Hash the new password
-            String hashedPassword = passwordEncoder.encode(userRequest.getPassword());
-            existingUser.setPassword(hashedPassword);
-        }
+
         existingUser.setSite(userRequest.getSite());
         existingUser.setEntreprise(userRequest.getEntreprise());
 

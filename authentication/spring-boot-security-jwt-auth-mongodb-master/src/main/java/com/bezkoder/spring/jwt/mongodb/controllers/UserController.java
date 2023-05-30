@@ -27,9 +27,9 @@ public class UserController {
         return service.getTaskByUserId(id);
     }
 
-    @PutMapping
-    public User modifyTask(@RequestBody User user){
-        return service.updateUser(user);
+    @PutMapping("/{userId}")
+    public User modifyTask(@PathVariable String userId,@RequestBody User user){
+        return service.updateUser(userId,user);
     }
 
     //@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")

@@ -68,11 +68,14 @@ const EmployerList = () => {
 
   const deleteUser = async id => {
     try {
-      await axios.delete(`${url}/users/${id}`);
       let currentSiteId = getUserSite(selectedEmployer).siteId;
-      deleteUserFromSite(id, currentSiteId);
+      await deleteUserFromSite(id, currentSiteId);
+      await axios.delete(`${url}/users/${id}`);
+
+      console.log('deleted', currentSiteId);
+      await getAllUsers();
     } catch (error) {
-      console.log(error);
+      console.log('error', error, Sites);
     }
   };
 
@@ -131,9 +134,9 @@ const EmployerList = () => {
     }
   };
 
-  const UpdateUser = async user => {
+  const UpdateUser = async (id, user) => {
     try {
-      await axios.put(`${url}/users`, user);
+      await axios.put(`${url}/users/${id}`, user);
     } catch (error) {
       console.log(error);
     }
@@ -176,10 +179,10 @@ const EmployerList = () => {
   };
 
   const getUserSite = user => {
+    console.log('current sites', Sites);
     let result = Sites.filter(
-      (e, i) => e.users.find(el => el.id == user.id) && i != 0,
+      (e, i) => e.users.find(el => el.id === user.id) && i !== 0,
     )[0];
-
     return result ? result : {users: []};
   };
 
@@ -212,7 +215,7 @@ const EmployerList = () => {
       console.log(formrole);
       console.log('update', updatedEmployer);
       console.log(formSite);
-      UpdateUser(updatedEmployer);
+      UpdateUser(selectedEmployer.id, updatedEmployer);
       if (formPassword !== '') {
         updatePassword(selectedEmployer.id, formPassword);
       }
@@ -254,7 +257,7 @@ const EmployerList = () => {
     Alert.alert('Supprimer', 'Voulez-vous supprimer cet employé ?', [
       {
         text: 'Annuler',
-        onPress: () => console.log(getUserSite(selectedEmployer).siteId),
+        onPress: () => console.log(getUserSite(selectedEmployer)),
         style: 'cancel',
       },
       {text: 'Confirmer', onPress: () => deleteUser(user.id)},
